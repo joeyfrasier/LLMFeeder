@@ -1,5 +1,7 @@
 # LLMFeeder - Webpage to Markdown for your LLM context!
 
+> **Worksuite Fork** — This is a fork of [jatinkrmalik/LLMFeeder](https://github.com/jatinkrmalik/LLMFeeder) maintained by the Worksuite team. It includes fixes for LinkedIn and other sites that embed large JSON data blobs (e.g. chameleonConfig, BPR snippets) which inflate token counts. See [Changes from upstream](#-changes-from-upstream) for details.
+
 <div align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?color=A31F34)](https://opensource.org/licenses/MIT)
@@ -13,6 +15,14 @@
 </div>
 
 A browser extension that converts web page content to clean Markdown format and copies it to clipboard with a single click, perfect for feeding content to Large Language Models (LLMs). Available for both [Chrome](https://chromewebstore.google.com/detail/llmfeeder-webpage-to-mark/cjjfhhapabcpcokkfldbiiojiphbifdk) and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/llmfeeder/).
+
+## 🔧 Changes from Upstream
+
+The following changes have been made on top of the upstream v2.1.0 release:
+
+- **Fix: Filter large `<code>`/`<pre>` blocks from iframe content** — Sites like LinkedIn embed large JSON config blobs (e.g. `chameleonConfig`, BPR API response data) inside same-origin iframes as `<code>` elements. These were passing through the existing `<script>` filter and massively inflating token counts (73K+ tokens on a single LinkedIn job page). Any `<code>` or `<pre>` element with content exceeding 150 characters is now stripped during iframe extraction.
+
+---
 
 ## ✨ What's New in v2.1.0
 

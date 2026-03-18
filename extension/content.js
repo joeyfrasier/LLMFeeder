@@ -20,6 +20,7 @@
   const MIN_CONTENT_LENGTH = 50; // Minimum meaningful content length
   const MAX_IFRAME_BATCH_SIZE = 5; // Process up to 5 iframes in parallel
   const MAX_DEBUG_LOG_ENTRIES = 500; // Keep memory usage in check
+  const MAX_CODE_ELEMENT_LENGTH = 150; // Skip <code>/<pre> blocks longer than this in iframes (prevents JSON config blobs)
 
   // Message action constants for security validation
   const MESSAGE_ACTIONS = {
@@ -110,6 +111,13 @@
         for (let i = elementsToRemove.length - 1; i >= 0; i--) {
           if (elementsToRemove[i].parentNode) {
             elementsToRemove[i].parentNode.removeChild(elementsToRemove[i]);
+          }
+        }
+        // Remove large code/pre blocks (e.g. embedded JSON config blobs like LinkedIn's chameleonConfig)
+        const codeBlocks = content.querySelectorAll('pre, code');
+        for (let i = codeBlocks.length - 1; i >= 0; i--) {
+          if (codeBlocks[i].textContent.length > MAX_CODE_ELEMENT_LENGTH && codeBlocks[i].parentNode) {
+            codeBlocks[i].parentNode.removeChild(codeBlocks[i]);
           }
         }
         const contentText = content.textContent || '';
@@ -655,6 +663,13 @@
           for (let j = scripts.length - 1; j >= 0; j--) {
             scripts[j].parentNode.removeChild(scripts[j]);
           }
+          // Remove large code/pre blocks (e.g. embedded JSON config blobs like LinkedIn's chameleonConfig)
+          const codeBlocks = clonedContent.querySelectorAll('pre, code');
+          for (let j = codeBlocks.length - 1; j >= 0; j--) {
+            if (codeBlocks[j].textContent.length > MAX_CODE_ELEMENT_LENGTH && codeBlocks[j].parentNode) {
+              codeBlocks[j].parentNode.removeChild(codeBlocks[j]);
+            }
+          }
 
           const iframeText = clonedContent.textContent || '';
           if (iframeText.trim().length > MIN_CONTENT_LENGTH) {
@@ -786,6 +801,13 @@
           const scripts = clonedContent.querySelectorAll('script, style, noscript');
           for (let j = scripts.length - 1; j >= 0; j--) {
             scripts[j].parentNode.removeChild(scripts[j]);
+          }
+          // Remove large code/pre blocks (e.g. embedded JSON config blobs like LinkedIn's chameleonConfig)
+          const codeBlocks = clonedContent.querySelectorAll('pre, code');
+          for (let j = codeBlocks.length - 1; j >= 0; j--) {
+            if (codeBlocks[j].textContent.length > MAX_CODE_ELEMENT_LENGTH && codeBlocks[j].parentNode) {
+              codeBlocks[j].parentNode.removeChild(codeBlocks[j]);
+            }
           }
 
           const iframeText = clonedContent.textContent || '';
